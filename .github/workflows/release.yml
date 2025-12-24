@@ -50,7 +50,7 @@ jobs:
         fi
         
     - name: Publish to VS Code Marketplace
-      if: env.VSCE_PAT != ''
+      if: secrets.VSCE_PAT != ''
       run: |
         vsce publish --pat ${{ secrets.VSCE_PAT }}
       env:

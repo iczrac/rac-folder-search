@@ -1,0 +1,48 @@
+name: Test Publish
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Compile TypeScript
+      run: npm run compile
+      
+    - name: Install vsce
+      run: npm install -g @vscode/vsce
+      
+    - name: Check publisher info
+      run: |
+        echo "Checking publisher configuration..."
+        echo "Publisher in package.json: $(cat package.json | grep '"publisher"' | cut -d'"' -f4)"
+        echo "VSCE_PAT secret exists: ${{ secrets.VSCE_PAT != '' }}"
+        
+    - name: Test vsce package
+      run: |
+        echo "Testing package creation..."
+        vsce package --allow-missing-repository
+        ls -la *.vsix
+        
+    - name: Test vsce login (dry run)
+      if: secrets.VSCE_PAT != ''
+      run: |
+        echo "Testing vsce login..."
+        echo "Using PAT: ${VSCE_PAT:0:10}..."
+        vsce verify-pat ${{ secrets.VSCE_PAT }} || echo "PAT verification failed"
+      env:
+        VSCE_PAT: ${{ secrets.VSCE_PAT }}
