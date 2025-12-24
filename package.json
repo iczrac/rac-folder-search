@@ -1,0 +1,116 @@
+{
+  "name": "rac-folder-search",
+  "displayName": "RAC Folder Search",
+  "description": "Fast folder and file search with full symbolic link support for VS Code",
+  "version": "1.0.2",
+  "publisher": "RaCHEN",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iczrac/rac-folder-search"
+  },
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "folder",
+    "search",
+    "symlink",
+    "symbolic link",
+    "quick pick",
+    "navigation"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "folder-search.search",
+        "title": "Search Folders",
+        "category": "RAC Folder Search"
+      },
+      {
+        "command": "folder-search.refreshCache",
+        "title": "Refresh Folder Index Cache",
+        "category": "RAC Folder Search"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "folder-search.search",
+        "key": "ctrl+alt+f",
+        "mac": "cmd+alt+f",
+        "when": "editorTextFocus || !editorTextFocus"
+      }
+    ],
+    "configuration": {
+      "title": "Folder Search",
+      "properties": {
+        "fold-search.followSymlinks": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Whether to follow symbolic links during indexing.\n\n**Enabled (true):** The scanner will follow symlinks and index their target directories. Symlinked folders will be marked with 🔗.\n\n**Disabled (false):** Symlinks will be ignored and their contents won't be indexed.\n\n**Recommendation:** Keep enabled if you have symlinked directories (like `cases -> /path/to/cases/`)."
+        },
+        "fold-search.maxDepth": {
+          "type": "number",
+          "default": 2,
+          "minimum": 1,
+          "maximum": 20,
+          "markdownDescription": "Maximum directory depth to scan from workspace root.\n\n**Examples:**\n- `1`: Only scan workspace root folders\n- `2`: Scan root + 1 level (e.g., workspace/cases/case-folders)\n- `3`: Scan root + 2 levels (includes subfolders in case folders)\n- `10`: Deep scanning (may include many nested folders)\n\n**For symlinked directories:** If you have `workspace/cases -> /path/to/cases/`, depth is counted from workspace root:\n- Depth 0: workspace/\n- Depth 1: workspace/cases/ (symlink)\n- Depth 2: workspace/cases/CASE001/ (first level inside symlink)\n- Depth 3: workspace/cases/CASE001/subfolder/ (second level)\n\n**Recommendation:** Use `2` to index only the first level of folders inside a symlinked directory, avoiding unnecessary subfolders."
+        },
+        "fold-search.includeFiles": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Include files in search results (in addition to folders).\n\n**Enabled (true):** Both files and folders will appear in search results.\n\n**Disabled (false):** Only folders will appear in search results.\n\n**Recommendation:** Disable (false) for faster performance and cleaner results when you only need to search folders."
+        },
+        "fold-search.cacheExpiryMinutes": {
+          "type": "number",
+          "default": 10,
+          "minimum": 1,
+          "markdownDescription": "Cache expiration time in minutes.\n\nThe scanner caches results to avoid re-scanning on every search. After this time, the cache expires and a new scan will be triggered.\n\n**Examples:**\n- `5`: Cache expires after 5 minutes (frequent updates)\n- `10`: Default - good balance\n- `30`: Cache expires after 30 minutes (for stable directories)\n- `60`: Cache expires after 1 hour (for rarely changing directories)\n\n**Recommendation:** Use `10-30` minutes for most cases. Increase if your directory structure rarely changes."
+        },
+        "fold-search.excludePatterns": {
+          "type": "array",
+          "default": [
+            "node_modules",
+            ".git",
+            "dist",
+            "build",
+            "__pycache__"
+          ],
+          "markdownDescription": "Directory names to exclude from indexing.\n\nFolders matching these names will be skipped during scanning. Hidden files/folders (starting with `.`) are automatically excluded.\n\n**Default exclusions:**\n- `node_modules`: Node.js dependencies\n- `.git`: Git repository data\n- `dist`, `build`: Build output folders\n- `__pycache__`: Python cache\n\n**To add more:** Add directory names to this list (e.g., `temp`, `cache`, `logs`)."
+        },
+        "fold-search.maxResults": {
+          "type": "number",
+          "default": 5000,
+          "minimum": 100,
+          "markdownDescription": "Maximum number of items to index.\n\nThe scanner will stop after indexing this many items to prevent performance issues.\n\n**Examples:**\n- `1000`: For small projects\n- `5000`: Default - suitable for most projects (1000-2000 folders)\n- `10000`: For large projects with many folders\n- `20000`: For very large projects\n\n**Note:** If you're hitting this limit, you'll see fewer results than expected. Increase this value or reduce `maxDepth` to focus on important folders.\n\n**Recommendation:** Use `5000` for typical use cases. Increase if you have more folders to index."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile",
+    "test": "node ./out/test/runTest.js",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^18.x",
+    "@types/vscode": "^1.75.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@vscode/test-electron": "^2.3.0",
+    "eslint": "^8.0.0",
+    "fast-check": "^3.15.0",
+    "glob": "^13.0.0",
+    "mocha": "^11.7.5",
+    "typescript": "^5.0.0"
+  }
+}

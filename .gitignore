@@ -1,0 +1,35 @@
+# 编译输出
+out/
+dist/
+
+# 依赖
+node_modules/
+
+# 测试
+.vscode-test/
+
+# 操作系统
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# 日志
+*.log
+npm-debug.log*
+
+# 临时文件
+*.tmp
+*.temp
+
+# 测试工作区（符号链接）
+test-workspace/cases
+test-workspace/symlink-folder
+
+# 旧版本的 vsix 文件
+folder-search-symlink-*.vsix
+
+# 保留最新版本
+!rac-folder-search-1.0.2.vsix
