@@ -24,12 +24,38 @@ npm-debug.log*
 *.tmp
 *.temp
 
-# 测试工作区（符号链接）
-test-workspace/cases
-test-workspace/symlink-folder
+# 开发和测试文件（不提交到仓库）
+test-*.js
+manual-test.js
+diagnose.js
+test-workspace/
+.kiro/
 
 # 旧版本的 vsix 文件
 folder-search-symlink-*.vsix
+
+# 开发文档（不提交到仓库）
+*发布*.md
+*安装*.md
+*指南*.md
+*说明*.md
+*清单*.md
+*报告*.md
+*步骤*.md
+*开始*.md
+CREATE_EXTENSION_PROJECT.md
+FINAL_*.md
+HOW_TO_*.md
+INSTALL_*.md
+PROMPT_FOR_AI.txt
+PUBLISHER_GUIDE.md
+QUICKSTART.md
+Release*.md
+SOLUTION.md
+START_HERE.md
+TEST_REPORT.md
+VSCODE_EXTENSION_DEVELOPMENT_PROMPT.md
+*.sh
 
 # 保留最新版本
 !rac-folder-search-1.0.2.vsix
