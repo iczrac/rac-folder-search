@@ -29,3 +29,4 @@ GitHub Actions故障排除.md
 发布到Marketplace指南.md
 解决Azure登录问题.md
 .github/**
+test-local-publish.sh
