@@ -46,7 +46,7 @@ jobs:
         echo ""
         
     - name: Test PAT verification
-      if: secrets.VSCE_PAT
+      if: ${{ env.VSCE_PAT != '' }}
       run: |
         echo "=== PAT Verification Test ==="
         echo "Testing PAT with first 10 characters: ${VSCE_PAT:0:10}..."
@@ -64,7 +64,7 @@ jobs:
         VSCE_PAT: ${{ secrets.VSCE_PAT }}
         
     - name: Test dry run publish
-      if: secrets.VSCE_PAT
+      if: ${{ env.VSCE_PAT != '' }}
       run: |
         echo "=== Dry Run Publish Test ==="
         if vsce publish --dry-run --pat ${{ secrets.VSCE_PAT }}; then
