@@ -2,7 +2,7 @@
   "name": "rac-folder-search",
   "displayName": "RAC Folder Search",
   "description": "Fast folder and file search with full symbolic link support for VS Code",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "publisher": "iczrac",
   "repository": {
     "type": "git",

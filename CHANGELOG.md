@@ -2,6 +2,23 @@
 
 All notable changes to the RAC Folder Search extension will be documented in this file.
 
+## [1.0.3] - 2024-12-24
+
+### Added
+- Published to VS Code Marketplace for easy installation
+- Comprehensive publishing guides and troubleshooting documentation
+- Automated marketplace publishing via GitHub Actions
+
+### Changed
+- Users can now install directly from VS Code Extensions panel
+- Search "RAC Folder Search" in VS Code to install
+- Automatic updates through VS Code extension system
+
+### Installation
+- **VS Code Marketplace**: Search "RAC Folder Search" in Extensions panel
+- **Command line**: `code --install-extension iczrac.rac-folder-search`
+- **Manual**: Download .vsix from GitHub Releases
+
 ## [1.0.2] - 2024-12-24
 
 ### Added
