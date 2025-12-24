@@ -49,6 +49,13 @@ jobs:
           echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
         fi
         
+    - name: Publish to VS Code Marketplace
+      if: env.VSCE_PAT != ''
+      run: |
+        vsce publish --pat ${{ secrets.VSCE_PAT }}
+      env:
+        VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
@@ -70,12 +77,18 @@ jobs:
           
           ### 📦 Installation
           
+          **Method 1: VS Code Marketplace (Recommended)**
+          1. Open VS Code
+          2. Press `Cmd+Shift+X` to open Extensions panel
+          3. Search for "RAC Folder Search"
+          4. Click Install
+          
+          **Method 2: Manual Installation**
           1. Download `rac-folder-search-${{ steps.get_version.outputs.version }}.vsix` from the assets below
           2. Open VS Code
           3. Press `Cmd+Shift+X` to open Extensions panel
           4. Click `...` → "Install from VSIX..."
           5. Select the downloaded `.vsix` file
-          6. Restart VS Code
           
           ### ⌨️ Usage
           
@@ -100,10 +113,9 @@ jobs:
           
           ### 🆕 What's New in v${{ steps.get_version.outputs.version }}
           
-          - ✨ Renamed to "RAC Folder Search"
-          - ✨ Added keyboard shortcut: `Cmd+Alt+F` / `Ctrl+Alt+F`
-          - ✨ Updated documentation with shortcut information
-          - ✨ Improved package metadata
+          - ✨ Available on VS Code Marketplace
+          - ✨ Enhanced keywords for better discoverability
+          - ✨ Automatic publishing workflow
           
           ### 📝 Requirements
           
@@ -114,6 +126,8 @@ jobs:
           MIT License
           
           ---
+          
+          **Marketplace**: https://marketplace.visualstudio.com/items?itemName=iczrac.rac-folder-search
           
           **Full Changelog**: https://github.com/iczrac/rac-folder-search/commits/v${{ steps.get_version.outputs.version }}
         files: |
