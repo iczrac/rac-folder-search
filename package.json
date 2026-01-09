@@ -36,9 +36,9 @@
       "explorer": [
         {
           "id": "racFolderSearch.pinnedFolders",
-          "name": "Pinned Folders",
+          "name": "RAC Search Pinned Folders",
           "icon": "$(pin)",
-          "contextualTitle": "Pinned Folders"
+          "contextualTitle": "RAC Search Pinned Folders"
         }
       ]
     },
