@@ -1,45 +1,63 @@
 import * as vscode from 'vscode';
-import * as path from 'path';
 
 /**
- * Represents a pinned folder item
+ * Represents a pinned folder item in the tree view
  */
-export interface PinnedFolder {
-  /** Display name */
-  label: string;
-  /** Absolute file system path */
-  fsPath: string;
-  /** Whether this is a symlink */
-  isSymlink: boolean;
+export class PinnedFolderItem extends vscode.TreeItem {
+  constructor(
+    public readonly fsPath: string,
+    public readonly label: string,
+    public readonly description: string,
+    public readonly isSymlink: boolean
+  ) {
+    super(label, vscode.TreeItemCollapsibleState.None);
+    
+    this.tooltip = fsPath;
+    this.description = description;
+    this.contextValue = 'pinnedFolder';
+    
+    // Set icon
+    this.iconPath = new vscode.ThemeIcon(
+      'folder',
+      new vscode.ThemeColor('charts.blue')
+    );
+    
+    // Add symlink indicator
+    if (isSymlink) {
+      this.label = `${label} 🔗`;
+    }
+    
+    // Command to open folder
+    this.command = {
+      command: 'folder-search.openPinnedFolder',
+      title: 'Open Folder',
+      arguments: [this.fsPath]
+    };
+  }
 }
 
 /**
- * TreeView provider for pinned folders
+ * Tree data provider for pinned folders
  */
 export class PinnedFoldersProvider implements vscode.TreeDataProvider<PinnedFolderItem> {
   private _onDidChangeTreeData = new vscode.EventEmitter<PinnedFolderItem | undefined | null | void>();
   readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
-
-  private pinnedFolders: PinnedFolder[] = [];
-
-  constructor(private context: vscode.ExtensionContext) {
+  
+  private pinnedFolders: Map<string, PinnedFolderItem> = new Map();
+  private context: vscode.ExtensionContext;
+  
+  constructor(context: vscode.ExtensionContext) {
+    this.context = context;
     this.loadPinnedFolders();
   }
-
+  
   /**
-   * Refresh the tree view
-   */
-  refresh(): void {
-    this._onDidChangeTreeData.fire();
-  }
-
-  /**
-   * Get tree item for display
+   * Get tree item
    */
   getTreeItem(element: PinnedFolderItem): vscode.TreeItem {
     return element;
   }
-
+  
   /**
    * Get children (root level items)
    */
@@ -47,110 +65,106 @@ export class PinnedFoldersProvider implements vscode.TreeDataProvider<PinnedFold
     if (element) {
       return Promise.resolve([]);
     }
-
-    return Promise.resolve(
-      this.pinnedFolders.map(folder => new PinnedFolderItem(folder))
-    );
+    
+    // Return all pinned folders sorted by label
+    const items = Array.from(this.pinnedFolders.values());
+    items.sort((a, b) => a.label.localeCompare(b.label));
+    return Promise.resolve(items);
   }
-
+  
   /**
-   * Add a folder to pinned list
+   * Pin a folder
    */
-  async pinFolder(fsPath: string, isSymlink: boolean = false): Promise<void> {
-    // Check if already pinned
-    if (this.pinnedFolders.some(f => f.fsPath === fsPath)) {
-      vscode.window.showInformationMessage('Folder is already pinned');
+  pinFolder(fsPath: string, label: string, description: string, isSymlink: boolean): void {
+    if (this.pinnedFolders.has(fsPath)) {
+      vscode.window.showInformationMessage(`Folder "${label}" is already pinned`);
       return;
     }
-
-    const label = path.basename(fsPath);
-    this.pinnedFolders.push({ label, fsPath, isSymlink });
-    await this.savePinnedFolders();
+    
+    const item = new PinnedFolderItem(fsPath, label, description, isSymlink);
+    this.pinnedFolders.set(fsPath, item);
+    this.savePinnedFolders();
     this.refresh();
+    
     vscode.window.showInformationMessage(`Pinned: ${label}`);
   }
-
+  
   /**
-   * Remove a folder from pinned list
+   * Unpin a folder
    */
-  async unpinFolder(fsPath: string): Promise<void> {
-    const index = this.pinnedFolders.findIndex(f => f.fsPath === fsPath);
-    if (index === -1) {
-      return;
-    }
-
-    const folder = this.pinnedFolders[index];
-    this.pinnedFolders.splice(index, 1);
-    await this.savePinnedFolders();
-    this.refresh();
-    vscode.window.showInformationMessage(`Unpinned: ${folder.label}`);
-  }
-
-  /**
-   * Clear all pinned folders
-   */
-  async clearAll(): Promise<void> {
-    if (this.pinnedFolders.length === 0) {
-      vscode.window.showInformationMessage('No pinned folders to clear');
-      return;
-    }
-
-    const answer = await vscode.window.showWarningMessage(
-      `Clear all ${this.pinnedFolders.length} pinned folders?`,
-      'Yes',
-      'No'
-    );
-
-    if (answer === 'Yes') {
-      this.pinnedFolders = [];
-      await this.savePinnedFolders();
+  unpinFolder(item: PinnedFolderItem): void {
+    if (this.pinnedFolders.delete(item.fsPath)) {
+      this.savePinnedFolders();
       this.refresh();
-      vscode.window.showInformationMessage('All pinned folders cleared');
+      vscode.window.showInformationMessage(`Unpinned: ${item.label}`);
     }
   }
-
+  
   /**
-   * Get all pinned folder paths
+   * Unpin all folders
    */
-  getPinnedFolderPaths(): string[] {
-    return this.pinnedFolders.map(f => f.fsPath);
+  unpinAll(): void {
+    this.pinnedFolders.clear();
+    this.savePinnedFolders();
+    this.refresh();
+    vscode.window.showInformationMessage('All folders unpinned');
   }
-
+  
   /**
-   * Load pinned folders from storage
+   * Check if a folder is pinned
+   */
+  isPinned(fsPath: string): boolean {
+    return this.pinnedFolders.has(fsPath);
+  }
+  
+  /**
+   * Get count of pinned folders
+   */
+  getCount(): number {
+    return this.pinnedFolders.size;
+  }
+  
+  /**
+   * Refresh tree view
+   */
+  refresh(): void {
+    this._onDidChangeTreeData.fire();
+  }
+  
+  /**
+   * Save pinned folders to workspace state
+   */
+  private savePinnedFolders(): void {
+    const data = Array.from(this.pinnedFolders.values()).map(item => ({
+      fsPath: item.fsPath,
+      label: item.label,
+      description: item.description,
+      isSymlink: item.isSymlink
+    }));
+    
+    this.context.workspaceState.update('pinnedFolders', data);
+  }
+  
+  /**
+   * Load pinned folders from workspace state
    */
   private loadPinnedFolders(): void {
-    const stored = this.context.globalState.get<PinnedFolder[]>('pinnedFolders');
-    if (stored) {
-      this.pinnedFolders = stored;
-    }
-  }
-
-  /**
-   * Save pinned folders to storage
-   */
-  private async savePinnedFolders(): Promise<void> {
-    await this.context.globalState.update('pinnedFolders', this.pinnedFolders);
-  }
-}
-
-/**
- * Tree item for a pinned folder
- */
-class PinnedFolderItem extends vscode.TreeItem {
-  constructor(public readonly folder: PinnedFolder) {
-    super(folder.label, vscode.TreeItemCollapsibleState.None);
-
-    this.tooltip = folder.fsPath;
-    this.description = folder.isSymlink ? '🔗' : '';
-    this.contextValue = 'pinnedFolder';
-    this.iconPath = new vscode.ThemeIcon('folder');
+    const data = this.context.workspaceState.get<Array<{
+      fsPath: string;
+      label: string;
+      description: string;
+      isSymlink: boolean;
+    }>>('pinnedFolders', []);
     
-    // Click to open folder
-    this.command = {
-      command: 'revealInExplorer',
-      title: 'Open Folder',
-      arguments: [vscode.Uri.file(folder.fsPath)]
-    };
+    this.pinnedFolders.clear();
+    for (const item of data) {
+      const pinnedItem = new PinnedFolderItem(
+        item.fsPath,
+        item.label,
+        item.description,
+        item.isSymlink
+      );
+      this.pinnedFolders.set(item.fsPath, pinnedItem);
+    }
   }
 }

@@ -19,7 +19,7 @@ export class QuickPickManager {
     pinnedFoldersProvider?: PinnedFoldersProvider
   ): Promise<void> {
     const quickPick = vscode.window.createQuickPick<vscode.QuickPickItem & { scanResult: ScanResult }>();
-    quickPick.placeholder = 'Search folders and files... (Right-click or use buttons to pin)';
+    quickPick.placeholder = 'Search folders and files... (Click pin button to pin selected folder)';
     quickPick.matchOnDescription = true;
     quickPick.matchOnDetail = false;
 
@@ -34,7 +34,7 @@ export class QuickPickManager {
     }
 
     // Initial items (limited to 100)
-    quickPick.items = this.filterAndSort(items, '').map(result => ({
+    quickPick.items = this.filterAndSort(items, '', pinnedFoldersProvider).map(result => ({
       label: result.label,
       description: result.description,
       scanResult: result
@@ -42,7 +42,7 @@ export class QuickPickManager {
 
     // Update items as user types
     quickPick.onDidChangeValue(value => {
-      quickPick.items = this.filterAndSort(items, value).map(result => ({
+      quickPick.items = this.filterAndSort(items, value, pinnedFoldersProvider).map(result => ({
         label: result.label,
         description: result.description,
         scanResult: result
@@ -56,7 +56,13 @@ export class QuickPickManager {
         if (selected && 'scanResult' in selected) {
           const result = selected.scanResult;
           if (result.isFolder) {
-            await pinnedFoldersProvider.pinFolder(result.fsPath, result.isSymlink);
+            const folderName = path.basename(result.fsPath);
+            pinnedFoldersProvider.pinFolder(
+              result.fsPath,
+              folderName,
+              result.description,
+              result.isSymlink
+            );
           } else {
             vscode.window.showWarningMessage('Only folders can be pinned');
           }
@@ -81,18 +87,34 @@ export class QuickPickManager {
    * Filters and sorts results based on query
    * @param items All scan results
    * @param query Search query
+   * @param pinnedFoldersProvider Provider to check pinned status
    * @returns Filtered and sorted results (max 100)
    */
-  private filterAndSort(items: ScanResult[], query: string): ScanResult[] {
+  private filterAndSort(
+    items: ScanResult[],
+    query: string,
+    pinnedFoldersProvider?: PinnedFoldersProvider
+  ): ScanResult[] {
+    // Add pinned indicator to labels
+    const itemsWithPinIndicator = items.map(item => {
+      if (pinnedFoldersProvider && item.isFolder && pinnedFoldersProvider.isPinned(item.fsPath)) {
+        return {
+          ...item,
+          label: `📌 ${item.label}`
+        };
+      }
+      return item;
+    });
+
     // If no query, return first 100 items
     if (!query) {
-      return items.slice(0, 100);
+      return itemsWithPinIndicator.slice(0, 100);
     }
 
     const queryLower = query.toLowerCase();
 
     // Filter items
-    const filtered = items.filter(item => {
+    const filtered = itemsWithPinIndicator.filter(item => {
       const name = path.basename(item.fsPath).toLowerCase();
       const desc = item.description.toLowerCase();
       return name.includes(queryLower) || desc.includes(queryLower);

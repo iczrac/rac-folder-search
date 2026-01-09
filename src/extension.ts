@@ -4,7 +4,7 @@ import { CacheManager } from './cacheManager';
 import { FolderScanner } from './folderScanner';
 import { QuickPickManager } from './quickPickManager';
 import { executeSearch } from './searchCommand';
-import { PinnedFoldersProvider } from './pinnedFoldersProvider';
+import { PinnedFoldersProvider, PinnedFolderItem } from './pinnedFoldersProvider';
 
 // Global instances
 let configManager: ConfigManager;
@@ -57,12 +57,13 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  // Register pin folder command
-  const pinCommand = vscode.commands.registerCommand(
-    'folder-search.pinFolder',
-    async (fsPath?: string, isSymlink?: boolean) => {
+  // Register open pinned folder command
+  const openPinnedFolderCommand = vscode.commands.registerCommand(
+    'folder-search.openPinnedFolder',
+    async (fsPath: string) => {
       if (fsPath) {
-        await pinnedFoldersProvider.pinFolder(fsPath, isSymlink);
+        const uri = vscode.Uri.file(fsPath);
+        await vscode.commands.executeCommand('revealInExplorer', uri);
       }
     }
   );
@@ -70,9 +71,9 @@ export function activate(context: vscode.ExtensionContext) {
   // Register unpin folder command
   const unpinCommand = vscode.commands.registerCommand(
     'folder-search.unpinFolder',
-    async (item: any) => {
-      if (item && item.folder) {
-        await pinnedFoldersProvider.unpinFolder(item.folder.fsPath);
+    async (item: PinnedFolderItem) => {
+      if (item && item.fsPath) {
+        pinnedFoldersProvider.unpinFolder(item);
       }
     }
   );
@@ -81,17 +82,13 @@ export function activate(context: vscode.ExtensionContext) {
   const clearPinnedCommand = vscode.commands.registerCommand(
     'folder-search.clearPinnedFolders',
     async () => {
-      await pinnedFoldersProvider.clearAll();
-    }
-  );
-
-  // Register open folder command
-  const openFolderCommand = vscode.commands.registerCommand(
-    'folder-search.openFolder',
-    async (item: any) => {
-      if (item && item.folder) {
-        const uri = vscode.Uri.file(item.folder.fsPath);
-        await vscode.commands.executeCommand('revealInExplorer', uri);
+      const answer = await vscode.window.showWarningMessage(
+        'Are you sure you want to unpin all folders?',
+        'Yes',
+        'No'
+      );
+      if (answer === 'Yes') {
+        pinnedFoldersProvider.unpinAll();
       }
     }
   );
@@ -100,10 +97,9 @@ export function activate(context: vscode.ExtensionContext) {
     treeView,
     searchCommand,
     refreshCommand,
-    pinCommand,
+    openPinnedFolderCommand,
     unpinCommand,
-    clearPinnedCommand,
-    openFolderCommand
+    clearPinnedCommand
   );
 }
 

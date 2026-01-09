@@ -34,7 +34,7 @@ suite('ConfigManager Unit Tests', () => {
     const validPatterns = ['node_modules', '.git'];
     assert.ok(Array.isArray(validPatterns), 'Valid patterns should be array');
     
-    const invalidPatterns = 'not-an-array' as any;
+    const invalidPatterns = 'not-an-array' as unknown;
     assert.ok(!Array.isArray(invalidPatterns), 'Invalid patterns should fail');
   });
 });

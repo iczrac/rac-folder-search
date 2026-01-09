@@ -65,16 +65,16 @@
         "icon": "$(refresh)"
       },
       {
-        "command": "folder-search.pinFolder",
-        "title": "Pin Folder",
+        "command": "folder-search.openPinnedFolder",
+        "title": "Open Pinned Folder",
         "category": "RAC Folder Search",
-        "icon": "$(pin)"
+        "icon": "$(folder-opened)"
       },
       {
         "command": "folder-search.unpinFolder",
         "title": "Unpin Folder",
         "category": "RAC Folder Search",
-        "icon": "$(pinned)"
+        "icon": "$(close)"
       },
       {
         "command": "folder-search.clearPinnedFolders",
@@ -104,7 +104,7 @@
           "group": "inline"
         },
         {
-          "command": "folder-search.openFolder",
+          "command": "folder-search.openPinnedFolder",
           "when": "view == racFolderSearch.pinnedFolders && viewItem == pinnedFolder",
           "group": "navigation"
         }
