@@ -32,17 +32,8 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
-    "viewsContainers": {
-      "activitybar": [
-        {
-          "id": "racFolderSearch",
-          "title": "RAC Folder Search",
-          "icon": "$(folder-opened)"
-        }
-      ]
-    },
     "views": {
-      "racFolderSearch": [
+      "explorer": [
         {
           "id": "racFolderSearch.pinnedFolders",
           "name": "Pinned Folders",

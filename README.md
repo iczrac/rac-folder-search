@@ -33,21 +33,20 @@ Pin frequently used folders to keep them easily accessible:
 1. **Pin a folder**: 
    - Search for a folder using `Cmd+Alt+F`
    - Click the pin button (📌) in the search results
-   - Or use Command Palette: "Pin Folder"
 
 2. **View pinned folders**:
-   - Click the RAC Folder Search icon in the Activity Bar (left sidebar)
-   - All pinned folders are displayed in the "Pinned Folders" panel
+   - Open the Explorer panel (left sidebar file explorer)
+   - All pinned folders are displayed in the "Pinned Folders" view
 
 3. **Open a pinned folder**:
    - Click on any pinned folder to open it in Explorer
 
 4. **Unpin a folder**:
-   - Click the pin icon next to the folder in the Pinned Folders panel
+   - Click the close icon next to the folder in the Pinned Folders view
    - Or right-click and select "Unpin Folder"
 
 5. **Clear all pinned folders**:
-   - Click the clear button (🗑️) in the Pinned Folders panel title bar
+   - Click the clear button (🗑️) in the Pinned Folders view title bar
 
 ### Refresh Cache
 
@@ -180,7 +179,7 @@ MIT
 
 New pinned folders feature:
 - **Pin folders for quick access**: Pin frequently used folders from search results
-- **Sidebar panel**: New Activity Bar panel showing all pinned folders
+- **Explorer panel integration**: Pinned folders appear in Explorer panel (not a separate Activity Bar icon)
 - **Persistent storage**: Pinned folders persist across VS Code sessions
 - **Easy management**: Unpin individual folders or clear all at once
 - **Visual indicators**: Symlinked folders show 🔗 icon
