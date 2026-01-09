@@ -2,7 +2,7 @@
   "name": "rac-folder-search",
   "displayName": "RAC Folder Search",
   "description": "Fast folder and file search with full symbolic link support for VS Code",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "publisher": "iczrac",
   "repository": {
     "type": "git",
@@ -32,18 +32,84 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "racFolderSearch",
+          "title": "RAC Folder Search",
+          "icon": "$(folder-opened)"
+        }
+      ]
+    },
+    "views": {
+      "racFolderSearch": [
+        {
+          "id": "racFolderSearch.pinnedFolders",
+          "name": "Pinned Folders",
+          "icon": "$(pin)",
+          "contextualTitle": "Pinned Folders"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "folder-search.search",
         "title": "Search Folders",
-        "category": "RAC Folder Search"
+        "category": "RAC Folder Search",
+        "icon": "$(search)"
       },
       {
         "command": "folder-search.refreshCache",
         "title": "Refresh Folder Index Cache",
-        "category": "RAC Folder Search"
+        "category": "RAC Folder Search",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "folder-search.pinFolder",
+        "title": "Pin Folder",
+        "category": "RAC Folder Search",
+        "icon": "$(pin)"
+      },
+      {
+        "command": "folder-search.unpinFolder",
+        "title": "Unpin Folder",
+        "category": "RAC Folder Search",
+        "icon": "$(pinned)"
+      },
+      {
+        "command": "folder-search.clearPinnedFolders",
+        "title": "Clear All Pinned Folders",
+        "category": "RAC Folder Search",
+        "icon": "$(clear-all)"
+      },
+      {
+        "command": "folder-search.openFolder",
+        "title": "Open Folder",
+        "category": "RAC Folder Search",
+        "icon": "$(folder-opened)"
       }
     ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "folder-search.clearPinnedFolders",
+          "when": "view == racFolderSearch.pinnedFolders",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "folder-search.unpinFolder",
+          "when": "view == racFolderSearch.pinnedFolders && viewItem == pinnedFolder",
+          "group": "inline"
+        },
+        {
+          "command": "folder-search.openFolder",
+          "when": "view == racFolderSearch.pinnedFolders && viewItem == pinnedFolder",
+          "group": "navigation"
+        }
+      ]
+    },
     "keybindings": [
       {
         "command": "folder-search.search",

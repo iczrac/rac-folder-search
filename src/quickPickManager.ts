@@ -1,6 +1,7 @@
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { ScanResult } from './types';
+import { PinnedFoldersProvider } from './pinnedFoldersProvider';
 
 /**
  * Manages QuickPick UI and user interactions
@@ -10,15 +11,27 @@ export class QuickPickManager {
    * Shows QuickPick with search results
    * @param items All scan results
    * @param onSelect Callback when user selects an item
+   * @param pinnedFoldersProvider Provider for pinned folders
    */
   async show(
     items: ScanResult[],
-    onSelect: (item: ScanResult) => void
+    onSelect: (item: ScanResult) => void,
+    pinnedFoldersProvider?: PinnedFoldersProvider
   ): Promise<void> {
     const quickPick = vscode.window.createQuickPick<vscode.QuickPickItem & { scanResult: ScanResult }>();
-    quickPick.placeholder = 'Search folders and files...';
+    quickPick.placeholder = 'Search folders and files... (Right-click or use buttons to pin)';
     quickPick.matchOnDescription = true;
     quickPick.matchOnDetail = false;
+
+    // Add pin button if provider is available
+    if (pinnedFoldersProvider) {
+      quickPick.buttons = [
+        {
+          iconPath: new vscode.ThemeIcon('pin'),
+          tooltip: 'Pin selected folder'
+        }
+      ];
+    }
 
     // Initial items (limited to 100)
     quickPick.items = this.filterAndSort(items, '').map(result => ({
@@ -35,6 +48,21 @@ export class QuickPickManager {
         scanResult: result
       }));
     });
+
+    // Handle button clicks (pin)
+    if (pinnedFoldersProvider) {
+      quickPick.onDidTriggerButton(async () => {
+        const selected = quickPick.activeItems[0];
+        if (selected && 'scanResult' in selected) {
+          const result = selected.scanResult;
+          if (result.isFolder) {
+            await pinnedFoldersProvider.pinFolder(result.fsPath, result.isSymlink);
+          } else {
+            vscode.window.showWarningMessage('Only folders can be pinned');
+          }
+        }
+      });
+    }
 
     // Handle selection
     quickPick.onDidAccept(() => {

@@ -2,6 +2,26 @@
 
 All notable changes to the RAC Folder Search extension will be documented in this file.
 
+## [1.0.4] - 2025-01-09
+
+### Added
+- **Pinned Folders Feature**: Pin frequently used folders for quick access
+  - New sidebar panel in Activity Bar showing pinned folders
+  - Pin folders directly from search results using the pin button
+  - Unpin folders by clicking the pin icon in the sidebar
+  - Clear all pinned folders with one click
+  - Pinned folders persist across VS Code sessions
+  - Visual indicator (🔗) for symlinked pinned folders
+- Commands:
+  - `Pin Folder`: Pin a folder to the sidebar
+  - `Unpin Folder`: Remove a folder from pinned list
+  - `Clear All Pinned Folders`: Remove all pinned folders
+  - `Open Folder`: Open pinned folder in Explorer
+
+### Changed
+- Enhanced QuickPick interface with pin button
+- Updated placeholder text to indicate pin functionality
+
 ## [1.0.3] - 2024-12-24
 
 ### Added

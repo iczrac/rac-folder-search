@@ -4,7 +4,8 @@ A VS Code extension that enables fast folder and file searching with **full symb
 
 ## Features
 
-- 🔍 **Fast Folder Search**: Quickly search through all folders in your workspace
+- 🔍 **Fast Folder Search**: Quickly search through all folders in your workspace with keyboard shortcut `Cmd+Alt+F` (Mac) / `Ctrl+Alt+F` (Windows/Linux)
+- 📌 **Pinned Folders**: Pin frequently used folders to a sidebar panel for instant access during task processing
 - 🔗 **Symlink Support**: Follows symbolic links and indexes their contents
 - 🚀 **Smart Caching**: Caches results for instant subsequent searches
 - 📊 **Intelligent Sorting**: Results sorted by relevance (exact match, prefix match, etc.)
@@ -16,10 +17,37 @@ A VS Code extension that enables fast folder and file searching with **full symb
 
 ### Search Folders
 
+**Quick Access**: Press `Cmd+Alt+F` (Mac) or `Ctrl+Alt+F` (Windows/Linux)
+
+Or:
 1. Open the Command Palette (`Cmd+Shift+P` or `Ctrl+Shift+P`)
-2. Type "Search Folders" and select **"Folder Search: Search Folders (with Symlink Support)"**
+2. Type "Search Folders" and select **"RAC Folder Search: Search Folders"**
 3. Start typing to filter results
-4. Select a folder to reveal it in the file explorer, or a file to open it
+4. Click the pin button (📌) to pin a folder for quick access
+5. Select a folder to reveal it in the file explorer
+
+### Pinned Folders
+
+Pin frequently used folders to keep them easily accessible:
+
+1. **Pin a folder**: 
+   - Search for a folder using `Cmd+Alt+F`
+   - Click the pin button (📌) in the search results
+   - Or use Command Palette: "Pin Folder"
+
+2. **View pinned folders**:
+   - Click the RAC Folder Search icon in the Activity Bar (left sidebar)
+   - All pinned folders are displayed in the "Pinned Folders" panel
+
+3. **Open a pinned folder**:
+   - Click on any pinned folder to open it in Explorer
+
+4. **Unpin a folder**:
+   - Click the pin icon next to the folder in the Pinned Folders panel
+   - Or right-click and select "Unpin Folder"
+
+5. **Clear all pinned folders**:
+   - Click the clear button (🗑️) in the Pinned Folders panel title bar
 
 ### Refresh Cache
 
@@ -147,6 +175,30 @@ Issues and pull requests are welcome! Please report any bugs or feature requests
 MIT
 
 ## Release Notes
+
+### 1.0.4
+
+New pinned folders feature:
+- **Pin folders for quick access**: Pin frequently used folders from search results
+- **Sidebar panel**: New Activity Bar panel showing all pinned folders
+- **Persistent storage**: Pinned folders persist across VS Code sessions
+- **Easy management**: Unpin individual folders or clear all at once
+- **Visual indicators**: Symlinked folders show 🔗 icon
+
+### 1.0.3
+
+Published to VS Code Marketplace:
+- Install directly from VS Code Extensions panel
+- Search "RAC Folder Search" to install
+- Automatic updates through VS Code
+
+### 1.0.2
+
+Renamed and enhanced:
+- Renamed to "RAC Folder Search"
+- Added keyboard shortcut: `Cmd+Alt+F` (Mac) / `Ctrl+Alt+F` (Windows/Linux)
+- Enhanced configuration descriptions
+- Complete automation setup
 
 ### 1.0.1
 

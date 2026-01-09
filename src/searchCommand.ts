@@ -3,6 +3,7 @@ import { ConfigManager } from './configManager';
 import { CacheManager } from './cacheManager';
 import { FolderScanner } from './folderScanner';
 import { QuickPickManager } from './quickPickManager';
+import { PinnedFoldersProvider } from './pinnedFoldersProvider';
 import { ScanResult } from './types';
 
 /**
@@ -12,7 +13,8 @@ export async function executeSearch(
   configManager: ConfigManager,
   cacheManager: CacheManager,
   scanner: FolderScanner,
-  quickPickManager: QuickPickManager
+  quickPickManager: QuickPickManager,
+  pinnedFoldersProvider: PinnedFoldersProvider
 ): Promise<void> {
   // Check workspace
   const workspaceFolders = vscode.workspace.workspaceFolders;
@@ -43,7 +45,7 @@ export async function executeSearch(
       // Show QuickPick
       await quickPickManager.show(results, (item: ScanResult) => {
         handleSelection(item);
-      });
+      }, pinnedFoldersProvider);
     }
   );
 }

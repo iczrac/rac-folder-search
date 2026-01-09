@@ -55,3 +55,17 @@ export interface CacheEntry {
   /** Timestamp when cache was created (milliseconds since epoch) */
   timestamp: number;
 }
+
+/**
+ * Represents a pinned folder for quick access
+ */
+export interface PinnedFolder {
+  /** Display name */
+  label: string;
+  
+  /** Absolute file system path */
+  fsPath: string;
+  
+  /** True if this is a symbolic link */
+  isSymlink: boolean;
+}
