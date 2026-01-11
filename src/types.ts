@@ -57,7 +57,36 @@ export interface CacheEntry {
 }
 
 /**
- * Represents a pinned folder for quick access
+ * Type of pinned item (file or folder)
+ */
+export enum PinnedItemType {
+  file = 'file',
+  folder = 'folder'
+}
+
+/**
+ * Represents a pinned item (file or folder) for quick access
+ */
+export interface PinnedItemData {
+  /** Display name */
+  label: string;
+  
+  /** Absolute file system path */
+  fsPath: string;
+  
+  /** Description (usually the path) */
+  description: string;
+  
+  /** True if this is a symbolic link */
+  isSymlink: boolean;
+  
+  /** Type of the pinned item (file or folder) */
+  type: PinnedItemType;
+}
+
+/**
+ * Legacy interface for backward compatibility
+ * @deprecated Use PinnedItemData instead
  */
 export interface PinnedFolder {
   /** Display name */

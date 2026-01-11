@@ -37,7 +37,6 @@
         {
           "id": "racFolderSearch.pinnedFolders",
           "name": "RAC Search Pinned Folders",
-          "icon": "$(pin)",
           "contextualTitle": "RAC Search Pinned Folders"
         }
       ]
@@ -62,6 +61,12 @@
         "icon": "$(folder-opened)"
       },
       {
+        "command": "folder-search.openPinnedFile",
+        "title": "Open Pinned File",
+        "category": "RAC Folder Search",
+        "icon": "$(file)"
+      },
+      {
         "command": "folder-search.unpinFolder",
         "title": "Unpin Folder",
         "category": "RAC Folder Search",
@@ -78,9 +83,63 @@
         "title": "Open Folder",
         "category": "RAC Folder Search",
         "icon": "$(folder-opened)"
+      },
+      {
+        "command": "folder-search.togglePin",
+        "title": "Toggle Pin/Unpin Folder",
+        "category": "RAC Folder Search",
+        "icon": "$(pin)"
+      },
+      {
+        "command": "folder-search.pinFromExplorer",
+        "title": "Pin/Unpin Folder",
+        "category": "RAC Folder Search",
+        "icon": "$(pin)"
+      },
+      {
+        "command": "folder-search.pinFile",
+        "title": "Pin/Unpin File",
+        "category": "RAC Folder Search",
+        "icon": "$(pin)"
+      },
+      {
+        "command": "folder-search.unpinFile",
+        "title": "Unpin File",
+        "category": "RAC Folder Search",
+        "icon": "$(pinned)"
+      },
+      {
+        "command": "folder-search.pinFolder",
+        "title": "Pin/Unpin Folder",
+        "category": "RAC Folder Search",
+        "icon": "$(pin)"
+      },
+      {
+        "command": "folder-search.unpinFolder",
+        "title": "Unpin Folder",
+        "category": "RAC Folder Search",
+        "icon": "$(pinned)"
+      },
+      {
+        "command": "folder-search.unpinFolderFromExplorer",
+        "title": "Unpin Folder",
+        "category": "RAC Folder Search",
+        "icon": "$(pinned)"
       }
     ],
     "menus": {
+      "explorer/context": [
+        {
+          "command": "folder-search.pinFile",
+          "group": "2_workspace",
+          "when": "!explorerResourceIsFolder"
+        },
+        {
+          "command": "folder-search.pinFolder",
+          "group": "2_workspace",
+          "when": "explorerResourceIsFolder"
+        }
+      ],
       "view/title": [
         {
           "command": "folder-search.clearPinnedFolders",
